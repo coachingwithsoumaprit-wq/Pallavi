@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Will You Be My Popcorn?</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    overflow: hidden;
+    background: #ffd9e6;
+    color: #800020;
+    font-family: Georgia, "Times New Roman", serif;
+}
+
+/* ---------- MAIN SCREEN ---------- */
+
+.screen {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 30px;
+    position: relative;
+}
+
+/* ---------- OPENING ---------- */
+
+.opening {
+    animation: fadeIn 1.5s ease;
+}
+
+.envelope {
+    width: 190px;
+    height: 135px;
+    margin: 0 auto 35px;
+    background: #800020;
+    border-radius: 10px;
+    position: relative;
+    box-shadow: 0 15px 35px rgba(128, 0, 32, 0.2);
+}
+
+.envelope::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-left: 95px solid transparent;
+    border-right: 95px solid transparent;
+    border-top: 75px solid #a83250;
+}
+
+.envelope::after {
+    content: "♥";
+    position: absolute;
+    color: #ffd9e6;
+    font-size: 35px;
+    left: 50%;
+    top: 58%;
+    transform: translate(-50%, -50%);
+}
+
+.opening h1 {
+    font-size: 42px;
+    font-style: italic;
+    margin-bottom: 15px;
+}
+
+.opening p {
+    font-size: 20px;
+    margin-bottom: 30px;
+    opacity: 0.85;
+}
+
+/* ---------- BUTTON ---------- */
+
+button {
+    border: 2px solid #800020;
+    background: transparent;
+    color: #800020;
+    padding: 14px 35px;
+    border-radius: 40px;
+    font-family: Georgia, serif;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.35s ease;
+}
+
+button:hover {
+    background: #800020;
+    color: #ffd9e6;
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 10px 25px rgba(128,0,32,0.25);
+}
+
+/* ---------- PROPOSAL ---------- */
+
+.proposal {
+    display: none;
+    animation: fadeIn 1.3s ease;
+}
+
+.popcorn {
+    font-size: 90px;
+    margin-bottom: 15px;
+    animation: popcornFloat 2.5s ease-in-out infinite;
+}
+
+.proposal h1 {
+    font-size: 48px;
+    font-style: italic;
+    margin-bottom: 20px;
+}
+
+.typewriter {
+    font-size: 22px;
+    line-height: 1.7;
+    max-width: 700px;
+    margin: 0 auto 25px;
+    min-height: 75px;
+}
+
+.question {
+    font-size: 38px;
+    font-weight: bold;
+    font-style: italic;
+    margin: 25px 0 40px;
+}
+
+/* ---------- YES / NO ---------- */
+
+.buttons {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+}
+
+.yes {
+    background: #800020;
+    color: #ffd9e6;
+}
+
+.yes:hover {
+    background: #5f0018;
+    color: white;
+}
+
+.no {
+    position: relative;
+}
+
+/* ---------- FINAL SCREEN ---------- */
+
+.final {
+    display: none;
+    animation: finalAppear 1.5s ease;
+}
+
+.final .big-heart {
+    font-size: 100px;
+    animation: heartbeat 1.2s infinite;
+    margin-bottom: 20px;
+}
+
+.final h1 {
+    font-size: 48px;
+    font-style: italic;
+    margin-bottom: 20px;
+}
+
+.final p {
+    font-size: 24px;
+    line-height: 1.7;
+    max-width: 700px;
+    margin: auto;
+}
+
+/* ---------- FLOATING HEARTS ---------- */
+
+.heart {
+    position: fixed;
+    bottom: -40px;
+    color: #800020;
+    pointer-events: none;
+    z-index: 100;
+    animation: floatHeart linear forwards;
+}
+
+@keyframes floatHeart {
+    0% {
+        transform: translateY(0) rotate(0deg) scale(0.5);
+        opacity: 0;
+    }
+
+    15% {
+        opacity: 1;
+    }
+
+    100% {
+        transform:
+            translateY(-115vh)
+            translateX(var(--move))
+            rotate(360deg)
+            scale(1.5);
+        opacity: 0;
+    }
+}
+
+/* ---------- HEART BURST ---------- */
+
+.burst-heart {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    color: #800020;
+    font-size: 25px;
+    pointer-events: none;
+    z-index: 200;
+    animation: burst 1.5s ease-out forwards;
+}
+
+@keyframes burst {
+    from {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 1;
+    }
+
+    to {
+        transform:
+            translate(
+                calc(-50% + var(--x)),
+                calc(-50% + var(--y))
+            )
+            scale(1.5)
+            rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* ---------- ANIMATIONS ---------- */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes finalAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.7);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes popcornFloat {
+    0%, 100% {
+        transform: translateY(0) rotate(-3deg);
+    }
+
+    50% {
+        transform: translateY(-12px) rotate(3deg);
+    }
+}
+
+@keyframes heartbeat {
+    0%, 100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.18);
+    }
+}
+
+/* ---------- LAPTOP / DESKTOP ---------- */
+
+@media (min-width: 900px) {
+
+    .screen {
+        padding: 50px;
+    }
+
+    .opening,
+    .proposal,
+    .final {
+        width: 850px;
+        padding: 45px;
+    }
+}
+
+/* ---------- SMALL SCREENS ---------- */
+
+@media (max-width: 600px) {
+
+    .opening h1,
+    .proposal h1,
+    .final h1 {
+        font-size: 32px;
+    }
+
+    .question {
+        font-size: 27px;
+    }
+
+    .typewriter {
+        font-size: 18px;
+    }
+
+    .final p {
+        font-size: 19px;
+    }
+
+    .popcorn {
+        font-size: 70px;
+    }
+
+    .buttons {
+        gap: 12px;
+    }
+}
+</style>
+</head>
+
+
+<body>
+
+<!-- ================= OPENING SCREEN ================= -->
+
+<section class="screen" id="openingScreen">
+
+    <div class="opening">
+
+        <div class="envelope"></div>
+
+        <h1>Open this for me?</h1>
+
+        <p>
+            I have something a little special to ask you...
+        </p>
+
+        <button onclick="openLetter()">
+            Open My Letter
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- ================= PROPOSAL SCREEN ================= -->
+
+<section class="screen" id="proposalScreen">
+
+    <div class="proposal">
+
+        <div class="popcorn">🍿</div>
+
+        <h1>Hey Cocoo...</h1>
+
+        <p class="typewriter" id="typingText"></p>
+
+        <div class="question">
+            Will you be my popcorn?
+        </div>
+
+        <div class="buttons">
+
+            <button class="yes" onclick="sayYes()">
+                YES
+            </button>
+
+            <button class="no" id="noButton" onclick="moveNoButton()">
+                Maybe...
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= FINAL SCREEN ================= -->
+
+<section class="screen" id="finalScreen">
+
+    <div class="final">
+
+        <div class="big-heart">♥</div>
+
+        <h1>It's a yes...</h1>
+
+        <p>
+            You're my popcorn forever. 🍿
+            <br><br>
+            And just so you know...
+            <br>
+            I'm never sharing my popcorn with anyone else.
+        </p>
+
+    </div>
+
+</section>
+
+
+<script>
+
+/* ================= OPEN LETTER ================= */
+
+function openLetter() {
+
+    document.getElementById("openingScreen").style.display = "none";
+
+    document.getElementById("proposalScreen").style.display = "flex";
+
+    startTyping();
+}
+
+
+/* ================= TYPING EFFECT ================= */
+
+const message =
+"I don't really know how to put everything I feel into words... " +
+"but I know one thing — having you in my life makes everything a little more special.";
+
+let index = 0;
+
+function startTyping() {
+
+    const textBox = document.getElementById("typingText");
+
+    textBox.innerHTML = "";
+
+    index = 0;
+
+    function type() {
+
+        if (index < message.length) {
+
+            textBox.innerHTML += message.charAt(index);
+
+            index++;
+
+            setTimeout(type, 35);
+
+        }
+
+    }
+
+    type();
+}
+
+
+/* ================= YES BUTTON ================= */
+
+function sayYes() {
+
+    document.getElementById("proposalScreen").style.display = "none";
+
+    document.getElementById("finalScreen").style.display = "flex";
+
+    // Huge heart burst
+    for (let i = 0; i < 70; i++) {
+        createBurstHeart();
+    }
+
+    // 120 floating hearts
+    for (let i = 0; i < 120; i++) {
+        setTimeout(() => {
+            createFloatingHeart();
+        }, i * 25);
+    }
+}
+
+
+/* ================= FLOATING HEARTS ================= */
+
+function createFloatingHeart() {
+
+    const heart = document.createElement("div");
+
+    heart.className = "heart";
+
+    heart.innerHTML = "♥";
+
+    heart.style.left = Math.random() * 100 + "vw";
+
+    heart.style.fontSize =
+        (15 + Math.random() * 35) + "px";
+
+    heart.style.animationDuration =
+        (4 + Math.random() * 5) + "s";
+
+    heart.style.setProperty(
+        "--move",
+        (Math.random() * 200 - 100) + "px"
+    );
+
+    document.body.appendChild(heart);
+
+    setTimeout(() => {
+        heart.remove();
+    }, 9000);
+}
+
+
+/* ================= HEART BURST ================= */
+
+function createBurstHeart() {
+
+    const heart = document.createElement("div");
+
+    heart.className = "burst-heart";
+
+    heart.innerHTML = "♥";
+
+    const angle = Math.random() * Math.PI * 2;
+
+    const distance = 150 + Math.random() * 450;
+
+    const x = Math.cos(angle) * distance;
+
+    const y = Math.sin(angle) * distance;
+
+    heart.style.setProperty("--x", x + "px");
+
+    heart.style.setProperty("--y", y + "px");
+
+    heart.style.fontSize =
+        (15 + Math.random() * 35) + "px";
+
+    document.body.appendChild(heart);
+
+    setTimeout(() => {
+        heart.remove();
+    }, 1600);
+}
+
+
+/* ================= MOVING MAYBE BUTTON ================= */
+
+function moveNoButton() {
+
+    const button = document.getElementById("noButton");
+
+    const x = Math.random() * 250 - 125;
+
+    const y = Math.random() * 180 - 90;
+
+    button.style.transform =
+        `translate(${x}px, ${y}px)`;
+}
+
+</script>
+
+</body>
+</html>
