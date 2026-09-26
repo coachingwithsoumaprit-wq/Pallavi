@@ -21,10 +21,10 @@ body {
     font-family: Georgia, "Times New Roman", serif;
 }
 
-/* ---------- MAIN SCREEN ---------- */
-
+/* SCREEN */
 .screen {
     min-height: 100vh;
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -33,10 +33,10 @@ body {
     position: relative;
 }
 
-/* ---------- OPENING ---------- */
-
+/* OPENING */
 .opening {
     animation: fadeIn 1.5s ease;
+    max-width: 850px;
 }
 
 .envelope {
@@ -78,11 +78,9 @@ body {
 .opening p {
     font-size: 20px;
     margin-bottom: 30px;
-    opacity: 0.85;
 }
 
-/* ---------- BUTTON ---------- */
-
+/* BUTTON */
 button {
     border: 2px solid #800020;
     background: transparent;
@@ -94,20 +92,24 @@ button {
     font-weight: bold;
     cursor: pointer;
     transition: 0.35s ease;
+    -webkit-tap-highlight-color: transparent;
 }
 
 button:hover {
     background: #800020;
     color: #ffd9e6;
     transform: translateY(-4px) scale(1.05);
-    box-shadow: 0 10px 25px rgba(128,0,32,0.25);
 }
 
-/* ---------- PROPOSAL ---------- */
+/* PROPOSAL */
+#proposalScreen,
+#finalScreen {
+    display: none;
+}
 
 .proposal {
-    display: none;
     animation: fadeIn 1.3s ease;
+    max-width: 850px;
 }
 
 .popcorn {
@@ -137,8 +139,6 @@ button:hover {
     margin: 25px 0 40px;
 }
 
-/* ---------- YES / NO ---------- */
-
 .buttons {
     display: flex;
     justify-content: center;
@@ -159,14 +159,13 @@ button:hover {
     position: relative;
 }
 
-/* ---------- FINAL SCREEN ---------- */
-
+/* FINAL */
 .final {
-    display: none;
     animation: finalAppear 1.5s ease;
+    max-width: 850px;
 }
 
-.final .big-heart {
+.big-heart {
     font-size: 100px;
     animation: heartbeat 1.2s infinite;
     margin-bottom: 20px;
@@ -181,12 +180,9 @@ button:hover {
 .final p {
     font-size: 24px;
     line-height: 1.7;
-    max-width: 700px;
-    margin: auto;
 }
 
-/* ---------- FLOATING HEARTS ---------- */
-
+/* FLOATING HEARTS */
 .heart {
     position: fixed;
     bottom: -40px;
@@ -216,8 +212,7 @@ button:hover {
     }
 }
 
-/* ---------- HEART BURST ---------- */
-
+/* BURST */
 .burst-heart {
     position: fixed;
     left: 50%;
@@ -247,8 +242,7 @@ button:hover {
     }
 }
 
-/* ---------- ANIMATIONS ---------- */
-
+/* ANIMATIONS */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -293,24 +287,7 @@ button:hover {
     }
 }
 
-/* ---------- LAPTOP / DESKTOP ---------- */
-
-@media (min-width: 900px) {
-
-    .screen {
-        padding: 50px;
-    }
-
-    .opening,
-    .proposal,
-    .final {
-        width: 850px;
-        padding: 45px;
-    }
-}
-
-/* ---------- SMALL SCREENS ---------- */
-
+/* MOBILE */
 @media (max-width: 600px) {
 
     .opening h1,
@@ -321,6 +298,7 @@ button:hover {
 
     .question {
         font-size: 27px;
+        margin-bottom: 30px;
     }
 
     .typewriter {
@@ -338,15 +316,18 @@ button:hover {
     .buttons {
         gap: 12px;
     }
+
+    button {
+        padding: 12px 25px;
+        font-size: 16px;
+    }
 }
 </style>
 </head>
 
-
 <body>
 
-<!-- ================= OPENING SCREEN ================= -->
-
+<!-- OPENING SCREEN -->
 <section class="screen" id="openingScreen">
 
     <div class="opening">
@@ -359,7 +340,7 @@ button:hover {
             I have something a little special to ask you...
         </p>
 
-        <button onclick="openLetter()">
+        <button id="openButton">
             Open My Letter
         </button>
 
@@ -368,8 +349,7 @@ button:hover {
 </section>
 
 
-<!-- ================= PROPOSAL SCREEN ================= -->
-
+<!-- PROPOSAL SCREEN -->
 <section class="screen" id="proposalScreen">
 
     <div class="proposal">
@@ -386,11 +366,11 @@ button:hover {
 
         <div class="buttons">
 
-            <button class="yes" onclick="sayYes()">
+            <button class="yes" id="yesButton">
                 YES
             </button>
 
-            <button class="no" id="noButton" onclick="moveNoButton()">
+            <button class="no" id="noButton">
                 Maybe...
             </button>
 
@@ -401,8 +381,7 @@ button:hover {
 </section>
 
 
-<!-- ================= FINAL SCREEN ================= -->
-
+<!-- FINAL SCREEN -->
 <section class="screen" id="finalScreen">
 
     <div class="final">
@@ -426,39 +405,54 @@ button:hover {
 
 <script>
 
-/* ================= OPEN LETTER ================= */
+/* =========================
+   ELEMENTS
+========================= */
 
-function openLetter() {
+const openingScreen = document.getElementById("openingScreen");
+const proposalScreen = document.getElementById("proposalScreen");
+const finalScreen = document.getElementById("finalScreen");
 
-    document.getElementById("openingScreen").style.display = "none";
+const openButton = document.getElementById("openButton");
+const yesButton = document.getElementById("yesButton");
+const noButton = document.getElementById("noButton");
 
-    document.getElementById("proposalScreen").style.display = "flex";
+const typingText = document.getElementById("typingText");
+
+
+/* =========================
+   OPEN LETTER
+========================= */
+
+openButton.addEventListener("click", function () {
+
+    openingScreen.style.display = "none";
+    proposalScreen.style.display = "flex";
 
     startTyping();
-}
+
+});
 
 
-/* ================= TYPING EFFECT ================= */
+/* =========================
+   TYPING EFFECT
+========================= */
 
 const message =
 "I don't really know how to put everything I feel into words... " +
 "but I know one thing — having you in my life makes everything a little more special.";
 
-let index = 0;
-
 function startTyping() {
 
-    const textBox = document.getElementById("typingText");
+    typingText.textContent = "";
 
-    textBox.innerHTML = "";
-
-    index = 0;
+    let index = 0;
 
     function type() {
 
         if (index < message.length) {
 
-            textBox.innerHTML += message.charAt(index);
+            typingText.textContent += message.charAt(index);
 
             index++;
 
@@ -472,39 +466,45 @@ function startTyping() {
 }
 
 
-/* ================= YES BUTTON ================= */
+/* =========================
+   YES BUTTON
+========================= */
 
-function sayYes() {
+yesButton.addEventListener("click", function () {
 
-    document.getElementById("proposalScreen").style.display = "none";
+    proposalScreen.style.display = "none";
+    finalScreen.style.display = "flex";
 
-    document.getElementById("finalScreen").style.display = "flex";
-
-    // Huge heart burst
+    /* Heart burst */
     for (let i = 0; i < 70; i++) {
         createBurstHeart();
     }
 
-    // 120 floating hearts
+    /* Floating hearts */
     for (let i = 0; i < 120; i++) {
-        setTimeout(() => {
+
+        setTimeout(function () {
             createFloatingHeart();
         }, i * 25);
+
     }
-}
+
+});
 
 
-/* ================= FLOATING HEARTS ================= */
+/* =========================
+   FLOATING HEART
+========================= */
 
 function createFloatingHeart() {
 
     const heart = document.createElement("div");
 
     heart.className = "heart";
+    heart.textContent = "♥";
 
-    heart.innerHTML = "♥";
-
-    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.left =
+        Math.random() * 100 + "vw";
 
     heart.style.fontSize =
         (15 + Math.random() * 35) + "px";
@@ -519,58 +519,74 @@ function createFloatingHeart() {
 
     document.body.appendChild(heart);
 
-    setTimeout(() => {
+    setTimeout(function () {
         heart.remove();
     }, 9000);
+
 }
 
 
-/* ================= HEART BURST ================= */
+/* =========================
+   HEART BURST
+========================= */
 
 function createBurstHeart() {
 
     const heart = document.createElement("div");
 
     heart.className = "burst-heart";
+    heart.textContent = "♥";
 
-    heart.innerHTML = "♥";
+    const angle =
+        Math.random() * Math.PI * 2;
 
-    const angle = Math.random() * Math.PI * 2;
+    const distance =
+        150 + Math.random() * 450;
 
-    const distance = 150 + Math.random() * 450;
+    const x =
+        Math.cos(angle) * distance;
 
-    const x = Math.cos(angle) * distance;
+    const y =
+        Math.sin(angle) * distance;
 
-    const y = Math.sin(angle) * distance;
+    heart.style.setProperty(
+        "--x",
+        x + "px"
+    );
 
-    heart.style.setProperty("--x", x + "px");
-
-    heart.style.setProperty("--y", y + "px");
+    heart.style.setProperty(
+        "--y",
+        y + "px"
+    );
 
     heart.style.fontSize =
         (15 + Math.random() * 35) + "px";
 
     document.body.appendChild(heart);
 
-    setTimeout(() => {
+    setTimeout(function () {
         heart.remove();
     }, 1600);
+
 }
 
 
-/* ================= MOVING MAYBE BUTTON ================= */
+/* =========================
+   MAYBE BUTTON
+========================= */
 
-function moveNoButton() {
+noButton.addEventListener("click", function () {
 
-    const button = document.getElementById("noButton");
+    const x =
+        Math.random() * 250 - 125;
 
-    const x = Math.random() * 250 - 125;
+    const y =
+        Math.random() * 180 - 90;
 
-    const y = Math.random() * 180 - 90;
+    noButton.style.transform =
+        "translate(" + x + "px, " + y + "px)";
 
-    button.style.transform =
-        `translate(${x}px, ${y}px)`;
-}
+});
 
 </script>
 
